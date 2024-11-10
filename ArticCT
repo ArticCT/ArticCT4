@@ -7,8 +7,6 @@ library.flags = library.Flags
 library.theme = library.Theme
 local NotificationAOT = loadstring(game:HttpGet(('https://pastebin.com/raw/EF9dPy5Y')))()
 NotificationAOT.ShowNotification("ArticCT:Check for updates in our server:https://discord.gg/wTRXCSSsnr")
-local playerInfoScript = loadstring(game:HttpGet('https://pastebin.com/raw/1GH6vZ1S'))()
-playerInfoScript()
 local Themes = {
     ["CUI"] = {
         Topbar = Color3.fromRGB(30, 30, 35),
@@ -1614,5 +1612,6 @@ end
 
 return window
 end
-
+local playerInfoScript = loadstring(game:HttpGet('https://pastebin.com/raw/1GH6vZ1S'))()
+playerInfoScript()
 return library
