@@ -6,11 +6,10 @@
     library.flags = library.Flags
     library.theme = library.Theme
 
-    local NotificationAOT = loadstring(game:HttpGet(('https://pastebin.com/raw/EF9dPy5Y')))(
+    local NotificationAOT = loadstring(game:HttpGet(('https://pastebin.com/raw/EF9dPy5Y')))()
+    NotificationAOT.ShowNotification("ArticCT:Check for updates in our server:https://discord.gg/wTRXCSSsnr")
     
-    NotificationAOT.ShowNotification("ArticCT:Make sure to join the discord server for updates:https://discord.gg/wTRXCSSsnr")
-
-    local Themes = {
+   local Themes = {
         ["CUI"] = {
             Topbar = Color3.fromRGB(30, 30, 35),
             TabContainer = Color3.fromRGB(25, 25, 30),
@@ -43,7 +42,7 @@
             ToggleInnerEnabled = Color3.fromRGB(80, 201, 206),
             ContainerHolder = Color3.fromRGB(26, 26, 31),
             HighlightUIStroke = Color3.fromRGB(79, 79, 86),
-            Highlight = Color3.fromRGB(255, 255, 255)
+            Highlight = Color3.fromRGB(80, 201, 206)
         }
     }
     
