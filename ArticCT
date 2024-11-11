@@ -5,6 +5,16 @@ local library = {
 }
 library.flags = library.Flags
 library.theme = library.Theme
+-- Load the loading screen script from Pastebin
+local LoadingScreenAOT = loadstring(game:HttpGet('https://pastebin.com/raw/fwN9AXA8'))()
+
+-- Example usage of showing the loading screen
+LoadingScreenAOT.ShowLoadingScreen("ArticCT", "rbxassetid://12994458971")
+
+-- Example usage of hiding the loading screen after 5 seconds (simulate loading)
+wait(5)
+LoadingScreenAOT.HideLoadingScreen()
+
 local NotificationAOT = loadstring(game:HttpGet(('https://pastebin.com/raw/EF9dPy5Y')))()
 NotificationAOT.ShowNotification("ArticCT:Check for updates in our server:https://discord.gg/wTRXCSSsnr")
 local Themes = {
