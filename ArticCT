@@ -10,8 +10,6 @@ local NotificationAOT = loadstring(game:HttpGet(('https://pastebin.com/raw/EF9dP
 NotificationAOT.ShowNotification("ArticCT:Check for updates in our server:https://discord.gg/wTRXCSSsnr")
 -- Load the function from Pastebin
 local CreatePlayerProfileUI = loadstring(game:HttpGet(('https://pastebin.com/raw/Grf4ncXW')))()
-
--- Call the function to create the player profile UI
 return CreatePlayerProfileUI()
 
 local Themes = {
