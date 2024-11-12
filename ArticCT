@@ -1644,12 +1644,6 @@ end)
 return tabtable
 end
 
-Library:MakeNotification({
-		Name = "UI Library Upgrade",
-		Content = "New UI Library Available at https://discord.gg/wTRXCSSsnr or https://artic-ct.static.domains/",
-		Time = 5
-	})
-
 return window
 end
 
