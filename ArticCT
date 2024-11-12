@@ -5,14 +5,6 @@ local library = {
 }
 library.flags = library.Flags
 library.theme = library.Theme
--- Load the loading screen script from Pastebin
-local LoadingScreenAOT = loadstring(game:HttpGet('https://pastebin.com/raw/fwN9AXA8'))()
-
--- Example usage of showing the loading screen
-LoadingScreenAOT.ShowLoadingScreen("ArticCT", "rbxassetid://12994458971")
-
-wait(5)
-LoadingScreenAOT.HideLoadingScreen()
 local Themes = {
     ["CUI"] = {
         Topbar = Color3.fromRGB(30, 30, 35),
