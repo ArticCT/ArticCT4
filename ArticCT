@@ -8,7 +8,7 @@ library.theme = library.Theme
 local NotificationAOT = loadstring(game:HttpGet(('https://pastebin.com/raw/EF9dPy5Y')))()
 NotificationAOT.ShowNotification("ArticCT:Check for updates in our server:https://discord.gg/wTRXCSSsnr")
 -- Load the loading screen script from Pastebin
-local LoadingScreenAOT = loadstring(game:HttpGet('YOUR_PASTEBIN_RAW_URL'))()
+local LoadingScreenAOT = loadstring(game:HttpGet('https://pastebin.com/raw/Kejapg9w'))()
 
 -- Example usage of showing the loading screen
 LoadingScreenAOT.ShowLoadingScreen("ArticCT...", "rbxassetid://12994458971")
