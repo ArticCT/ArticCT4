@@ -1,3 +1,4 @@
+local TweenService = game:GetService("TweenService")
 
 local library = {
     Flags = {},
@@ -6,15 +7,32 @@ local library = {
 }
 library.flags = library.Flags
 library.theme = library.Theme
+
+-- Notification Manager
 local NotificationManager = loadstring(game:HttpGet("https://pastebin.com/raw/z71cNhWd"))()
 NotificationManager:Initialize(game.Players.LocalPlayer:WaitForChild("PlayerGui"))
-NotificationManager:CreateNotification("ArticCT:get our update's in our server..https://discord.gg/wTRXCSSsnr", 5, Color3.fromRGB(50, 50, 50), 4384403532)  -- Your image ID
+-- Note: We will show this notification after loading screen is finished.
+local function showNotification()
+    NotificationManager:CreateNotification("ArticCT: get our update's in our server.. https://discord.gg/wTRXCSSsnr", 5, Color3.fromRGB(50, 50, 50), 4384403532)  -- Your image ID
+end
 
+-- Loading screen manager
 local LoadingScreen = loadstring(game:HttpGet("https://pastebin.com/raw/cwWCbFcp"))()  
 
 -- Initialize and show the loading screen
 local loading = LoadingScreen:Initialize(game.Players.LocalPlayer:WaitForChild("PlayerGui"))
 
+-- Function to trigger the UI library after loading is finished
+local function showLibraryUI()
+    -- Your UI library setup code goes here
+    -- You can make use of the `library` object to initialize or display your library UI
+    print("Loading Screen Finished. Showing UI and Notifications!")
+    
+    -- Call your UI setup code here, for example:
+    -- library:Initialize()  -- Assuming you have an Initialize function to set up the UI
+end
+
+-- Setup for themes
 local Themes = {
     ["CUI"] = {
         Topbar = Color3.fromRGB(30, 30, 35),
@@ -51,6 +69,30 @@ local Themes = {
         Highlight = Color3.fromRGB(80, 201, 206)
     }
 }
+
+-- Function to handle loading screen completion and triggering the UI and notification
+local function onLoadingComplete()
+    -- Show the UI and notification once the loading screen is complete
+    showLibraryUI()
+    showNotification()
+end
+
+-- Wait for the loading screen to finish
+local progressTween = TweenService:Create(loading, TweenInfo.new(5, Enum.EasingStyle.Linear, Enum.EasingDirection.Out), {Size = UDim2.new(1, 0, 1, 0)})
+progressTween:Play()
+
+-- Once the loading screen progress is done, trigger the UI and notification
+progressTween.Completed:Connect(function()
+    -- Fading out loading screen
+    local fadeOutTween = TweenService:Create(loading, TweenInfo.new(0.5, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundTransparency = 1})
+    fadeOutTween:Play()
+    
+    -- Once fade out is complete, hide the loading screen and show the rest
+    fadeOutTween.Completed:Connect(function()
+        loading:Destroy()  -- Clean up the loading screen
+        onLoadingComplete()  -- Show UI and notification
+    end)
+end)
 
 local HttpService = game:GetService("HttpService")
 local CoreGui = game:GetService("CoreGui")
