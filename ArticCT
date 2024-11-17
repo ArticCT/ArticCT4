@@ -10,6 +10,11 @@ local NotificationManager = loadstring(game:HttpGet("https://pastebin.com/raw/z7
 NotificationManager:Initialize(game.Players.LocalPlayer:WaitForChild("PlayerGui"))
 NotificationManager:CreateNotification("ArticCT:get our update's in our server..https://discord.gg/wTRXCSSsnr", 5, Color3.fromRGB(50, 50, 50), 4384403532)  -- Your image ID
 
+local LoadingScreen = loadstring(game:HttpGet("https://pastebin.com/raw/cwWCbFcp"))()  
+
+-- Initialize and show the loading screen
+local loading = LoadingScreen:Initialize(game.Players.LocalPlayer:WaitForChild("PlayerGui"))
+
 local Themes = {
     ["CUI"] = {
         Topbar = Color3.fromRGB(30, 30, 35),
