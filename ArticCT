@@ -7,6 +7,26 @@ local library = {
 }
 library.flags = library.Flags
 library.theme = library.Theme
+-- Main Library Table
+local Library = {}
+
+-- Initialize Notification Holder
+local NotificationHolder = Instance.new("Frame")
+NotificationHolder.Name = "NotificationHolder"
+NotificationHolder.Size = UDim2.new(0.3, 0, 1, 0) -- Adjust size
+NotificationHolder.Position = UDim2.new(0.7, 0, 0, 0) -- Right side of the screen
+NotificationHolder.BackgroundTransparency = 1
+NotificationHolder.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui") -- Parent to PlayerGui
+
+-- Add Layout for Notification Stacking
+local UIListLayout = Instance.new("UIListLayout", NotificationHolder)
+UIListLayout.Padding = UDim.new(0, 10) -- Space between notifications
+UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+
+Library.NotificationHolder = NotificationHolder
+
+-- Notification Function
 function Library:MakeNotification(NotificationConfig)
     spawn(function()
         -- Default Configuration
@@ -16,14 +36,15 @@ function Library:MakeNotification(NotificationConfig)
             Time = NotificationConfig.Time or 5
         }
 
-        -- Create Notification Container
+        -- Create Notification Parent Frame
         local NotificationParent = Instance.new("Frame")
         NotificationParent.Size = UDim2.new(1, 0, 0, 0)
         NotificationParent.AutomaticSize = Enum.AutomaticSize.Y
         NotificationParent.BackgroundTransparency = 1
+        NotificationParent.ClipsDescendants = true
         NotificationParent.Parent = self.NotificationHolder
 
-        -- Notification Frame
+        -- Create Notification Frame
         local NotificationFrame = Instance.new("Frame")
         NotificationFrame.Parent = NotificationParent
         NotificationFrame.Size = UDim2.new(1, 0, 0, 0)
@@ -32,16 +53,16 @@ function Library:MakeNotification(NotificationConfig)
         NotificationFrame.AutomaticSize = Enum.AutomaticSize.Y
         NotificationFrame.BorderSizePixel = 0
 
-        -- Add Corner Radius
+        -- Add Rounded Corners
         local UICorner = Instance.new("UICorner", NotificationFrame)
         UICorner.CornerRadius = UDim.new(0, 10)
 
-        -- Add Stroke
+        -- Add Border/Stroke
         local UIStroke = Instance.new("UIStroke", NotificationFrame)
         UIStroke.Color = Color3.fromRGB(93, 93, 93)
         UIStroke.Thickness = 1.2
 
-        -- Padding for Content
+        -- Add Padding for Internal Elements
         local UIPadding = Instance.new("UIPadding", NotificationFrame)
         UIPadding.PaddingTop = UDim.new(0, 12)
         UIPadding.PaddingBottom = UDim.new(0, 12)
@@ -54,7 +75,7 @@ function Library:MakeNotification(NotificationConfig)
         Title.Font = Enum.Font.GothamBold
         Title.Text = NotificationConfig.Name
         Title.TextSize = 15
-        Title.TextColor3 = Color3.new(1, 1, 1)
+        Title.TextColor3 = Color3.fromRGB(255, 255, 255)
         Title.BackgroundTransparency = 1
         Title.TextXAlignment = Enum.TextXAlignment.Left
 
@@ -71,24 +92,32 @@ function Library:MakeNotification(NotificationConfig)
         Content.TextXAlignment = Enum.TextXAlignment.Left
         Content.AutomaticSize = Enum.AutomaticSize.Y
 
-        -- Slide In Animation
+        -- Tween Service for Animation
         local TweenService = game:GetService("TweenService")
+        -- Slide-In Animation
         TweenService:Create(NotificationFrame, TweenInfo.new(0.5, Enum.EasingStyle.Quint), {Position = UDim2.new(0, 0, 0, 0)}):Play()
 
-        -- Wait and Start Hiding
+        -- Wait for Display Time Before Hiding
         wait(NotificationConfig.Time - 0.88)
+
+        -- Fading Out Elements
         TweenService:Create(Title, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {TextTransparency = 0.4}):Play()
         TweenService:Create(Content, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {TextTransparency = 0.5}):Play()
         TweenService:Create(NotificationFrame, TweenInfo.new(0.8, Enum.EasingStyle.Quint), {BackgroundTransparency = 0.6}):Play()
         TweenService:Create(UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {Transparency = 0.9}):Play()
 
-        -- Slide Out Animation
+        -- Slide-Out Animation
         wait(0.3)
         NotificationFrame:TweenPosition(UDim2.new(1, 20, 0, 0), "In", "Quint", 0.8, true)
         wait(1.35)
+
+        -- Cleanup
         NotificationParent:Destroy()
     end)
 end
+
+-- Return Library
+return Library
 
 -- Setup for themes
 local Themes = {
