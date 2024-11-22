@@ -1,5 +1,3 @@
-local TweenService = game:GetService("TweenService")
-
 local library = {
     Flags = {},
     SectionsOpened = false,
@@ -7,119 +5,10 @@ local library = {
 }
 library.flags = library.Flags
 library.theme = library.Theme
--- Main Library Table
-local Library = {}
-
--- Initialize Notification Holder
-local NotificationHolder = Instance.new("Frame")
-NotificationHolder.Name = "NotificationHolder"
-NotificationHolder.Size = UDim2.new(0.3, 0, 1, 0) -- Adjust size
-NotificationHolder.Position = UDim2.new(0.7, 0, 0, 0) -- Right side of the screen
-NotificationHolder.BackgroundTransparency = 1
-NotificationHolder.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui") -- Parent to PlayerGui
-
--- Add Layout for Notification Stacking
-local UIListLayout = Instance.new("UIListLayout", NotificationHolder)
-UIListLayout.Padding = UDim.new(0, 10) -- Space between notifications
-UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-
-Library.NotificationHolder = NotificationHolder
-
--- Notification Function
-function Library:MakeNotification(NotificationConfig)
-    spawn(function()
-        -- Default Configuration
-        NotificationConfig = {
-            Name = NotificationConfig.Name or "Notification",
-            Content = NotificationConfig.Content or "This is a test notification.",
-            Time = NotificationConfig.Time or 5
-        }
-
-        -- Create Notification Parent Frame
-        local NotificationParent = Instance.new("Frame")
-        NotificationParent.Size = UDim2.new(1, 0, 0, 0)
-        NotificationParent.AutomaticSize = Enum.AutomaticSize.Y
-        NotificationParent.BackgroundTransparency = 1
-        NotificationParent.ClipsDescendants = true
-        NotificationParent.Parent = self.NotificationHolder
-
-        -- Create Notification Frame
-        local NotificationFrame = Instance.new("Frame")
-        NotificationFrame.Parent = NotificationParent
-        NotificationFrame.Size = UDim2.new(1, 0, 0, 0)
-        NotificationFrame.Position = UDim2.new(1, -55, 0, 0)
-        NotificationFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-        NotificationFrame.AutomaticSize = Enum.AutomaticSize.Y
-        NotificationFrame.BorderSizePixel = 0
-
-        -- Add Rounded Corners
-        local UICorner = Instance.new("UICorner", NotificationFrame)
-        UICorner.CornerRadius = UDim.new(0, 10)
-
-        -- Add Border/Stroke
-        local UIStroke = Instance.new("UIStroke", NotificationFrame)
-        UIStroke.Color = Color3.fromRGB(93, 93, 93)
-        UIStroke.Thickness = 1.2
-
-        -- Add Padding for Internal Elements
-        local UIPadding = Instance.new("UIPadding", NotificationFrame)
-        UIPadding.PaddingTop = UDim.new(0, 12)
-        UIPadding.PaddingBottom = UDim.new(0, 12)
-        UIPadding.PaddingLeft = UDim.new(0, 12)
-        UIPadding.PaddingRight = UDim.new(0, 12)
-
-        -- Title Label
-        local Title = Instance.new("TextLabel", NotificationFrame)
-        Title.Size = UDim2.new(1, 0, 0, 20)
-        Title.Font = Enum.Font.GothamBold
-        Title.Text = NotificationConfig.Name
-        Title.TextSize = 15
-        Title.TextColor3 = Color3.fromRGB(255, 255, 255)
-        Title.BackgroundTransparency = 1
-        Title.TextXAlignment = Enum.TextXAlignment.Left
-
-        -- Content Label
-        local Content = Instance.new("TextLabel", NotificationFrame)
-        Content.Size = UDim2.new(1, 0, 0, 0)
-        Content.Position = UDim2.new(0, 0, 0, 25)
-        Content.Font = Enum.Font.GothamSemibold
-        Content.Text = NotificationConfig.Content
-        Content.TextSize = 14
-        Content.TextColor3 = Color3.fromRGB(200, 200, 200)
-        Content.BackgroundTransparency = 1
-        Content.TextWrapped = true
-        Content.TextXAlignment = Enum.TextXAlignment.Left
-        Content.AutomaticSize = Enum.AutomaticSize.Y
-
-        -- Tween Service for Animation
-        local TweenService = game:GetService("TweenService")
-        -- Slide-In Animation
-        TweenService:Create(NotificationFrame, TweenInfo.new(0.5, Enum.EasingStyle.Quint), {Position = UDim2.new(0, 0, 0, 0)}):Play()
-
-        -- Wait for Display Time Before Hiding
-        wait(NotificationConfig.Time - 0.88)
-
-        -- Fading Out Elements
-        TweenService:Create(Title, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {TextTransparency = 0.4}):Play()
-        TweenService:Create(Content, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {TextTransparency = 0.5}):Play()
-        TweenService:Create(NotificationFrame, TweenInfo.new(0.8, Enum.EasingStyle.Quint), {BackgroundTransparency = 0.6}):Play()
-        TweenService:Create(UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {Transparency = 0.9}):Play()
-
-        -- Slide-Out Animation
-        wait(0.3)
-        NotificationFrame:TweenPosition(UDim2.new(1, 20, 0, 0), "In", "Quint", 0.8, true)
-        wait(1.35)
-
-        -- Cleanup
-        NotificationParent:Destroy()
-    end)
+local function showNotification()
+    NotificationManager:CreateNotification("ArticCT: get our update's in our server.. https://discord.gg/wTRXCSSsnr", 5, Color3.fromRGB(50, 50, 50), 4384403532)
 end
 
--- Return Library
-return Library
-
--- Setup for themes
 local Themes = {
     ["CUI"] = {
         Topbar = Color3.fromRGB(30, 30, 35),
@@ -153,7 +42,41 @@ local Themes = {
         ToggleInnerEnabled = Color3.fromRGB(80, 201, 206),
         ContainerHolder = Color3.fromRGB(26, 26, 31),
         HighlightUIStroke = Color3.fromRGB(79, 79, 86),
-        Highlight = Color3.fromRGB(80, 201, 206)
+        Highlight = Color3.fromRGB(255, 255, 255)
+     },
+     ["Aurora"] = {
+        Topbar = Color3.fromRGB(21, 26, 33),
+        TabContainer = Color3.fromRGB(19, 23, 30),
+        Lines = Color3.fromRGB(44, 53, 67),
+        HoverTabFrame = Color3.fromRGB(41, 49, 65),
+        ItemUIStroke = Color3.fromRGB(42, 49, 65),
+        TabFrame = Color3.fromRGB(34, 41, 54),
+        SectionFrame = Color3.fromRGB(23, 27, 35),
+        TabText = Color3.fromRGB(237, 237, 237),
+        ItemText = Color3.fromRGB(237, 237, 237),
+        SectionText = Color3.fromRGB(237, 237, 237),
+        ItemUIStrokeSelected = Color3.fromRGB(255, 211, 105),
+        SelectedTabFrame = Color3.fromRGB(53, 64, 84),
+        ItemFrame = Color3.fromRGB(32, 37, 49),
+        HoverItemFrame = Color3.fromRGB(43, 50, 67),
+        DropdownIcon = Color3.fromRGB(175, 175, 175),
+        SectionUIStroke = Color3.fromRGB(35, 41, 54),
+        MainUIStroke = Color3.fromRGB(54, 65, 85),
+        Main = Color3.fromRGB(19, 22, 29),
+        InputPlaceHolder = Color3.fromRGB(57, 66, 89),
+        Shadow = Color3.fromRGB(19, 22, 29),
+        SliderOuter = Color3.fromRGB(48, 56, 75),
+        SliderInner = Color3.fromRGB(255, 211, 105),
+        TabUIStroke = Color3.fromRGB(45, 54, 71),
+        ToggleOuter = Color3.fromRGB(48, 56, 75),
+        ToggleOuterEnabled = Color3.fromRGB(58, 68, 91),
+        ToggleOuterUIStroke = Color3.fromRGB(42, 49, 65),
+        ToggleOuterUIStrokeEnabled = Color3.fromRGB(255, 211, 105),
+        ToggleInner = Color3.fromRGB(77, 90, 121),
+        ToggleInnerEnabled = Color3.fromRGB(255, 211, 105),
+        ContainerHolder = Color3.fromRGB(25, 32, 43),
+        HighlightUIStroke = Color3.fromRGB(79, 94, 124),
+        Highlight = Color3.fromRGB(255, 229, 121)
     }
 }
 
@@ -524,6 +447,46 @@ closeButton.MouseButton1Click:Connect(function()
     unnamed:Destroy()
     shadow:Destroy()
     notifications:Destroy()
+end)
+
+local minimizeButton = Instance.new("ImageButton")
+minimizeButton.Name = "ImageButton"
+minimizeButton.Image = "rbxassetid://10664064072"
+minimizeButton.ImageTransparency = 0.1
+minimizeButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+minimizeButton.BackgroundTransparency = 1
+minimizeButton.Position = UDim2.new(0.954, -18, 0.235, 0)
+minimizeButton.Size = UDim2.new(0, 17, 0, 17)
+minimizeButton.Parent = topbar
+
+minimizeButton.MouseEnter:Connect(function()
+    TweenService:Create(minimizeButton, TweenInfo.new(.125, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut), {ImageColor3 = Theme.Highlight}):Play()
+end)
+
+minimizeButton.MouseLeave:Connect(function()
+    TweenService:Create(minimizeButton, TweenInfo.new(.125, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut), {ImageColor3 = Color3.fromRGB(255, 255, 255)}):Play()
+end)
+
+local Minimized = false
+
+minimizeButton.MouseButton1Click:Connect(function()
+    Minimized = not Minimized
+   
+    if Minimized then
+        topbar.TopbarLine.Visible = false
+        mainShadow.Visible = false
+    end
+    TweenService:Create(main, TweenInfo.new(.125, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut), {Size = Minimized and UDim2.new(0, 500,0, 34) or UDim2.new(0, 500,0, 350)}):Play()
+    if not Minimized then
+        wait(.125)
+        mainShadow.Visible = true
+        topbar.TopbarLine.Visible = true
+    end
+    for _,v in next, main:GetChildren() do
+        if v.Name ~= "Topbar" and v.ClassName == "Frame" or v.ClassName == "ScrollingFrame" then
+            v.Visible = not Minimized
+        end
+    end
 end)
 
 local uIStroke = Instance.new("UIStroke")
