@@ -7,120 +7,84 @@ local library = {
 }
 library.flags = library.Flags
 library.theme = library.Theme
-
---Feather Icons https://github.com/evoincorp/lucideblox/tree/master/src/modules/util - Created by 7kayoh
-local Icons = {}
-
-local Success, Response = pcall(function()
-	Icons = HttpService:JSONDecode(game:HttpGetAsync("https://raw.githubusercontent.com/evoincorp/lucideblox/master/src/modules/util/icons.json")).icons
-end)
-
-if not Success then
-	warn("\nOrion Library - Failed to load Feather Icons. Error code: " .. Response .. "\n")
-end	
-
-local function GetIcon(IconName)
-	if Icons[IconName] ~= nil then
-		return Icons[IconName]
-	else
-		return nil
-	end
-end
-
--- Notification Manager
-function library:MakeNotification(NotificationConfig)
+function Library:MakeNotification(NotificationConfig)
     spawn(function()
         -- Default Configuration
         NotificationConfig = {
             Name = NotificationConfig.Name or "Notification",
-            Content = NotificationConfig.Content or "Test",
-            Image = NotificationConfig.Image or "rbxassetid://4384403532",
-            Time = NotificationConfig.Time or 15
+            Content = NotificationConfig.Content or "This is a test notification.",
+            Time = NotificationConfig.Time or 5
         }
 
         -- Create Notification Container
-        local NotificationParent = self:Create("Frame", {
-            Size = UDim2.new(1, 0, 0, 0),
-            AutomaticSize = Enum.AutomaticSize.Y,
-            Parent = self.NotificationHolder
-        })
+        local NotificationParent = Instance.new("Frame")
+        NotificationParent.Size = UDim2.new(1, 0, 0, 0)
+        NotificationParent.AutomaticSize = Enum.AutomaticSize.Y
+        NotificationParent.BackgroundTransparency = 1
+        NotificationParent.Parent = self.NotificationHolder
 
-        -- Notification Frame and Contents
-        local NotificationFrame = self:Create("RoundFrame", {
-            Parent = NotificationParent,
-            Size = UDim2.new(1, 0, 0, 0),
-            Position = UDim2.new(1, -55, 0, 0),
-            BackgroundColor3 = Color3.fromRGB(25, 25, 25),
-            AutomaticSize = Enum.AutomaticSize.Y,
-            CornerRadius = UDim.new(0, 10)
-        })
+        -- Notification Frame
+        local NotificationFrame = Instance.new("Frame")
+        NotificationFrame.Parent = NotificationParent
+        NotificationFrame.Size = UDim2.new(1, 0, 0, 0)
+        NotificationFrame.Position = UDim2.new(1, -55, 0, 0)
+        NotificationFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+        NotificationFrame.AutomaticSize = Enum.AutomaticSize.Y
+        NotificationFrame.BorderSizePixel = 0
 
-        self:Create("UIStroke", {
-            Parent = NotificationFrame,
-            Color = Color3.fromRGB(93, 93, 93),
-            Thickness = 1.2
-        })
+        -- Add Corner Radius
+        local UICorner = Instance.new("UICorner", NotificationFrame)
+        UICorner.CornerRadius = UDim.new(0, 10)
 
-        self:Create("UIPadding", {
-            Parent = NotificationFrame,
-            PaddingTop = UDim.new(0, 12),
-            PaddingBottom = UDim.new(0, 12),
-            PaddingLeft = UDim.new(0, 12),
-            PaddingRight = UDim.new(0, 12)
-        })
+        -- Add Stroke
+        local UIStroke = Instance.new("UIStroke", NotificationFrame)
+        UIStroke.Color = Color3.fromRGB(93, 93, 93)
+        UIStroke.Thickness = 1.2
 
-        -- Icon
-        self:Create("ImageLabel", {
-            Parent = NotificationFrame,
-            Size = UDim2.new(0, 20, 0, 20),
-            Image = NotificationConfig.Image,
-            ImageColor3 = Color3.fromRGB(240, 240, 240),
-            Name = "Icon",
-            BackgroundTransparency = 1
-        })
+        -- Padding for Content
+        local UIPadding = Instance.new("UIPadding", NotificationFrame)
+        UIPadding.PaddingTop = UDim.new(0, 12)
+        UIPadding.PaddingBottom = UDim.new(0, 12)
+        UIPadding.PaddingLeft = UDim.new(0, 12)
+        UIPadding.PaddingRight = UDim.new(0, 12)
 
-        -- Title
-        self:Create("TextLabel", {
-            Parent = NotificationFrame,
-            Size = UDim2.new(1, -30, 0, 20),
-            Position = UDim2.new(0, 30, 0, 0),
-            Font = Enum.Font.GothamBold,
-            Text = NotificationConfig.Name,
-            TextSize = 15,
-            TextColor3 = Color3.new(1, 1, 1),
-            BackgroundTransparency = 1,
-            Name = "Title"
-        })
+        -- Title Label
+        local Title = Instance.new("TextLabel", NotificationFrame)
+        Title.Size = UDim2.new(1, 0, 0, 20)
+        Title.Font = Enum.Font.GothamBold
+        Title.Text = NotificationConfig.Name
+        Title.TextSize = 15
+        Title.TextColor3 = Color3.new(1, 1, 1)
+        Title.BackgroundTransparency = 1
+        Title.TextXAlignment = Enum.TextXAlignment.Left
 
-        -- Content
-        self:Create("TextLabel", {
-            Parent = NotificationFrame,
-            Size = UDim2.new(1, 0, 0, 0),
-            Position = UDim2.new(0, 0, 0, 25),
-            Font = Enum.Font.GothamSemibold,
-            Text = NotificationConfig.Content,
-            TextSize = 14,
-            TextColor3 = Color3.fromRGB(200, 200, 200),
-            BackgroundTransparency = 1,
-            Name = "Content",
-            TextWrapped = true,
-            AutomaticSize = Enum.AutomaticSize.Y
-        })
+        -- Content Label
+        local Content = Instance.new("TextLabel", NotificationFrame)
+        Content.Size = UDim2.new(1, 0, 0, 0)
+        Content.Position = UDim2.new(0, 0, 0, 25)
+        Content.Font = Enum.Font.GothamSemibold
+        Content.Text = NotificationConfig.Content
+        Content.TextSize = 14
+        Content.TextColor3 = Color3.fromRGB(200, 200, 200)
+        Content.BackgroundTransparency = 1
+        Content.TextWrapped = true
+        Content.TextXAlignment = Enum.TextXAlignment.Left
+        Content.AutomaticSize = Enum.AutomaticSize.Y
 
-        -- Show Notification
-        self:Tween(NotificationFrame, TweenInfo.new(0.5, Enum.EasingStyle.Quint), {Position = UDim2.new(0, 0, 0, 0)})
+        -- Slide In Animation
+        local TweenService = game:GetService("TweenService")
+        TweenService:Create(NotificationFrame, TweenInfo.new(0.5, Enum.EasingStyle.Quint), {Position = UDim2.new(0, 0, 0, 0)}):Play()
 
-        -- Wait for Duration, Start Hiding
+        -- Wait and Start Hiding
         wait(NotificationConfig.Time - 0.88)
-        self:Tween(NotificationFrame.Icon, TweenInfo.new(0.4, Enum.EasingStyle.Quint), {ImageTransparency = 1})
-        self:Tween(NotificationFrame, TweenInfo.new(0.8, Enum.EasingStyle.Quint), {BackgroundTransparency = 0.6})
-        wait(0.3)
-        self:Tween(NotificationFrame.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {Transparency = 0.9})
-        self:Tween(NotificationFrame.Title, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {TextTransparency = 0.4})
-        self:Tween(NotificationFrame.Content, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {TextTransparency = 0.5})
+        TweenService:Create(Title, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {TextTransparency = 0.4}):Play()
+        TweenService:Create(Content, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {TextTransparency = 0.5}):Play()
+        TweenService:Create(NotificationFrame, TweenInfo.new(0.8, Enum.EasingStyle.Quint), {BackgroundTransparency = 0.6}):Play()
+        TweenService:Create(UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {Transparency = 0.9}):Play()
 
-        -- Slide Out and Cleanup
-        NotificationFrame:TweenPosition(UDim2.new(1, 20, 0, 0), 'In', 'Quint', 0.8, true)
+        -- Slide Out Animation
+        wait(0.3)
+        NotificationFrame:TweenPosition(UDim2.new(1, 20, 0, 0), "In", "Quint", 0.8, true)
         wait(1.35)
         NotificationParent:Destroy()
     end)
