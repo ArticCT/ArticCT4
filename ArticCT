@@ -9,27 +9,102 @@ library.flags = library.Flags
 library.theme = library.Theme
 
 -- Notification Manager
-local NotificationManager = loadstring(game:HttpGet("https://pastebin.com/raw/z71cNhWd"))()
-NotificationManager:Initialize(game.Players.LocalPlayer:WaitForChild("PlayerGui"))
--- Note: We will show this notification after loading screen is finished.
-local function showNotification()
-    NotificationManager:CreateNotification("ArticCT: get our update's in our server.. https://discord.gg/wTRXCSSsnr", 5, Color3.fromRGB(50, 50, 50), 4384403532)  -- Your image ID
-end
+function library:MakeNotification(NotificationConfig)
+    spawn(function()
+        -- Default Configuration
+        NotificationConfig = {
+            Name = NotificationConfig.Name or "Notification",
+            Content = NotificationConfig.Content or "Test",
+            Image = NotificationConfig.Image or "rbxassetid://4384403532",
+            Time = NotificationConfig.Time or 15
+        }
 
--- Loading screen manager
-local LoadingScreen = loadstring(game:HttpGet("https://pastebin.com/raw/cwWCbFcp"))()  
+        -- Create Notification Container
+        local NotificationParent = self:Create("Frame", {
+            Size = UDim2.new(1, 0, 0, 0),
+            AutomaticSize = Enum.AutomaticSize.Y,
+            Parent = self.NotificationHolder
+        })
 
--- Initialize and show the loading screen
-local loading = LoadingScreen:Initialize(game.Players.LocalPlayer:WaitForChild("PlayerGui"))
+        -- Notification Frame and Contents
+        local NotificationFrame = self:Create("RoundFrame", {
+            Parent = NotificationParent,
+            Size = UDim2.new(1, 0, 0, 0),
+            Position = UDim2.new(1, -55, 0, 0),
+            BackgroundColor3 = Color3.fromRGB(25, 25, 25),
+            AutomaticSize = Enum.AutomaticSize.Y,
+            CornerRadius = UDim.new(0, 10)
+        })
 
--- Function to trigger the UI library after loading is finished
-local function showLibraryUI()
-    -- Your UI library setup code goes here
-    -- You can make use of the `library` object to initialize or display your library UI
-    print("Loading Screen Finished. Showing UI and Notifications!")
-    
-    -- Call your UI setup code here, for example:
-    -- library:Initialize()  -- Assuming you have an Initialize function to set up the UI
+        self:Create("UIStroke", {
+            Parent = NotificationFrame,
+            Color = Color3.fromRGB(93, 93, 93),
+            Thickness = 1.2
+        })
+
+        self:Create("UIPadding", {
+            Parent = NotificationFrame,
+            PaddingTop = UDim.new(0, 12),
+            PaddingBottom = UDim.new(0, 12),
+            PaddingLeft = UDim.new(0, 12),
+            PaddingRight = UDim.new(0, 12)
+        })
+
+        -- Icon
+        self:Create("ImageLabel", {
+            Parent = NotificationFrame,
+            Size = UDim2.new(0, 20, 0, 20),
+            Image = NotificationConfig.Image,
+            ImageColor3 = Color3.fromRGB(240, 240, 240),
+            Name = "Icon",
+            BackgroundTransparency = 1
+        })
+
+        -- Title
+        self:Create("TextLabel", {
+            Parent = NotificationFrame,
+            Size = UDim2.new(1, -30, 0, 20),
+            Position = UDim2.new(0, 30, 0, 0),
+            Font = Enum.Font.GothamBold,
+            Text = NotificationConfig.Name,
+            TextSize = 15,
+            TextColor3 = Color3.new(1, 1, 1),
+            BackgroundTransparency = 1,
+            Name = "Title"
+        })
+
+        -- Content
+        self:Create("TextLabel", {
+            Parent = NotificationFrame,
+            Size = UDim2.new(1, 0, 0, 0),
+            Position = UDim2.new(0, 0, 0, 25),
+            Font = Enum.Font.GothamSemibold,
+            Text = NotificationConfig.Content,
+            TextSize = 14,
+            TextColor3 = Color3.fromRGB(200, 200, 200),
+            BackgroundTransparency = 1,
+            Name = "Content",
+            TextWrapped = true,
+            AutomaticSize = Enum.AutomaticSize.Y
+        })
+
+        -- Show Notification
+        self:Tween(NotificationFrame, TweenInfo.new(0.5, Enum.EasingStyle.Quint), {Position = UDim2.new(0, 0, 0, 0)})
+
+        -- Wait for Duration, Start Hiding
+        wait(NotificationConfig.Time - 0.88)
+        self:Tween(NotificationFrame.Icon, TweenInfo.new(0.4, Enum.EasingStyle.Quint), {ImageTransparency = 1})
+        self:Tween(NotificationFrame, TweenInfo.new(0.8, Enum.EasingStyle.Quint), {BackgroundTransparency = 0.6})
+        wait(0.3)
+        self:Tween(NotificationFrame.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {Transparency = 0.9})
+        self:Tween(NotificationFrame.Title, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {TextTransparency = 0.4})
+        self:Tween(NotificationFrame.Content, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {TextTransparency = 0.5})
+
+        -- Slide Out and Cleanup
+        NotificationFrame:TweenPosition(UDim2.new(1, 20, 0, 0), 'In', 'Quint', 0.8, true)
+        wait(1.35)
+        NotificationParent:Destroy()
+    end)
 end
 
 -- Setup for themes
@@ -69,30 +144,6 @@ local Themes = {
         Highlight = Color3.fromRGB(80, 201, 206)
     }
 }
-
--- Function to handle loading screen completion and triggering the UI and notification
-local function onLoadingComplete()
-    -- Show the UI and notification once the loading screen is complete
-    showLibraryUI()
-    showNotification()
-end
-
--- Wait for the loading screen to finish
-local progressTween = TweenService:Create(loading, TweenInfo.new(5, Enum.EasingStyle.Linear, Enum.EasingDirection.Out), {Size = UDim2.new(1, 0, 1, 0)})
-progressTween:Play()
-
--- Once the loading screen progress is done, trigger the UI and notification
-progressTween.Completed:Connect(function()
-    -- Fading out loading screen
-    local fadeOutTween = TweenService:Create(loading, TweenInfo.new(0.5, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundTransparency = 1})
-    fadeOutTween:Play()
-    
-    -- Once fade out is complete, hide the loading screen and show the rest
-    fadeOutTween.Completed:Connect(function()
-        loading:Destroy()  -- Clean up the loading screen
-        onLoadingComplete()  -- Show UI and notification
-    end)
-end)
 
 local HttpService = game:GetService("HttpService")
 local CoreGui = game:GetService("CoreGui")
