@@ -5,8 +5,100 @@ local library = {
 }
 library.flags = library.Flags
 library.theme = library.Theme
-local function showNotification()
-    NotificationManager:CreateNotification("ArticCT: get our update's in our server.. https://discord.gg/wTRXCSSsnr", 5, Color3.fromRGB(50, 50, 50), 4384403532)
+
+function library.NotificationManager:CreateNotification(Content, Duration, BackgroundColor, Icon)
+    local NotificationManager = {}
+
+function NotificationManager:CreateNotification(Content, Duration, BackgroundColor, Icon)
+    -- Default values
+    Content = Content or "Default Notification"
+    Duration = Duration or 5
+    BackgroundColor = BackgroundColor or library.theme.Topbar
+    Icon = Icon or "rbxassetid://4384403532"
+
+    -- Create notification parent frame
+    local NotificationHolder = Instance.new("Frame")
+    NotificationHolder.Size = UDim2.new(0, 300, 0, 0)
+    NotificationHolder.Position = UDim2.new(1, -25, 1, -25)
+    NotificationHolder.AnchorPoint = Vector2.new(1, 1)
+    NotificationHolder.BackgroundTransparency = 1
+    NotificationHolder.Parent = script.Parent -- Adjust to your UI container
+
+    -- Notification container
+    local NotificationFrame = Instance.new("Frame")
+    NotificationFrame.Size = UDim2.new(1, 0, 0, 0)
+    NotificationFrame.BackgroundColor3 = BackgroundColor
+    NotificationFrame.AutomaticSize = Enum.AutomaticSize.Y
+    NotificationFrame.ClipsDescendants = true
+    NotificationFrame.Parent = NotificationHolder
+
+    -- Corner rounding
+    local UICorner = Instance.new("UICorner")
+    UICorner.CornerRadius = UDim.new(0, 10)
+    UICorner.Parent = NotificationFrame
+
+    -- Add stroke
+    local UIStroke = Instance.new("UIStroke")
+    UIStroke.Color = library.theme.ItemUIStroke
+    UIStroke.Thickness = 1.2
+    UIStroke.Parent = NotificationFrame
+
+    -- Padding for the content
+    local UIPadding = Instance.new("UIPadding")
+    UIPadding.PaddingTop = UDim.new(0, 10)
+    UIPadding.PaddingBottom = UDim.new(0, 10)
+    UIPadding.PaddingLeft = UDim.new(0, 15)
+    UIPadding.PaddingRight = UDim.new(0, 15)
+    UIPadding.Parent = NotificationFrame
+
+    -- Icon
+    local IconImage = Instance.new("ImageLabel")
+    IconImage.Image = Icon
+    IconImage.Size = UDim2.new(0, 24, 0, 24)
+    IconImage.BackgroundTransparency = 1
+    IconImage.ImageColor3 = library.theme.ItemText
+    IconImage.Parent = NotificationFrame
+
+    -- Title
+    local TitleLabel = Instance.new("TextLabel")
+    TitleLabel.Text = "Notification"
+    TitleLabel.Font = Enum.Font.GothamBold
+    TitleLabel.TextSize = 16
+    TitleLabel.TextColor3 = library.theme.ItemText
+    TitleLabel.BackgroundTransparency = 1
+    TitleLabel.Position = UDim2.new(0, 30, 0, 0)
+    TitleLabel.Size = UDim2.new(1, -30, 0, 20)
+    TitleLabel.Parent = NotificationFrame
+
+    -- Content
+    local ContentLabel = Instance.new("TextLabel")
+    ContentLabel.Text = Content
+    ContentLabel.Font = Enum.Font.GothamSemibold
+    ContentLabel.TextSize = 14
+    ContentLabel.TextColor3 = library.theme.SectionText
+    ContentLabel.BackgroundTransparency = 1
+    ContentLabel.AutomaticSize = Enum.AutomaticSize.Y
+    ContentLabel.TextWrapped = true
+    ContentLabel.Position = UDim2.new(0, 0, 0, 30)
+    ContentLabel.Size = UDim2.new(1, 0, 0, 0)
+    ContentLabel.Parent = NotificationFrame
+
+    -- Tween In
+    NotificationFrame:TweenPosition(UDim2.new(0, 0, 0, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quint, 0.5, true)
+
+    -- Remove notification after duration
+    task.delay(Duration, function()
+        -- Fade out
+        for _, child in pairs(NotificationFrame:GetChildren()) do
+            if child:IsA("TextLabel") or child:IsA("ImageLabel") then
+                child:TweenTransparency(1, Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.4, true)
+            end
+        end
+
+        NotificationFrame:TweenSize(UDim2.new(1, 0, 0, 0), Enum.EasingDirection.In, Enum.EasingStyle.Quint, 0.8, true)
+        task.wait(0.8)
+        NotificationHolder:Destroy()
+    end)
 end
 
 local Themes = {
@@ -1608,81 +1700,6 @@ buttonFrame.MouseLeave:Connect(function()
     TweenService:Create(buttonUIStroke, TweenInfo.new(.1, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut), {Color = Theme.ItemUIStroke}):Play()
 end)
 
-local NotificationHolder = SetProps(SetChildren(MakeElement("TFrame"), {
-	SetProps(MakeElement("List"), {
-		HorizontalAlignment = Enum.HorizontalAlignment.Center,
-		SortOrder = Enum.SortOrder.LayoutOrder,
-		VerticalAlignment = Enum.VerticalAlignment.Bottom,
-		Padding = UDim.new(0, 5)
-	})
-}), {
-	Position = UDim2.new(1, -25, 1, -25),
-	Size = UDim2.new(0, 300, 1, -25),
-	AnchorPoint = Vector2.new(1, 1),
-	Parent = Orion
-})
-
-function Library:MakeNotification(NotificationConfig)
-	spawn(function()
-		NotificationConfig.Name = NotificationConfig.Name or "Notification"
-		NotificationConfig.Content = NotificationConfig.Content or "Test"
-		NotificationConfig.Image = NotificationConfig.Image or "rbxassetid://4384403532"
-		NotificationConfig.Time = NotificationConfig.Time or 15
-
-		local NotificationParent = SetProps(MakeElement("TFrame"), {
-			Size = UDim2.new(1, 0, 0, 0),
-			AutomaticSize = Enum.AutomaticSize.Y,
-			Parent = NotificationHolder
-		})
-
-		local NotificationFrame = SetChildren(SetProps(MakeElement("RoundFrame", Color3.fromRGB(25, 25, 25), 0, 10), {
-			Parent = NotificationParent, 
-			Size = UDim2.new(1, 0, 0, 0),
-			Position = UDim2.new(1, -55, 0, 0),
-			BackgroundTransparency = 0,
-			AutomaticSize = Enum.AutomaticSize.Y
-		}), {
-			MakeElement("Stroke", Color3.fromRGB(93, 93, 93), 1.2),
-			MakeElement("Padding", 12, 12, 12, 12),
-			SetProps(MakeElement("Image", NotificationConfig.Image), {
-				Size = UDim2.new(0, 20, 0, 20),
-				ImageColor3 = Color3.fromRGB(240, 240, 240),
-				Name = "Icon"
-			}),
-			SetProps(MakeElement("Label", NotificationConfig.Name, 15), {
-				Size = UDim2.new(1, -30, 0, 20),
-				Position = UDim2.new(0, 30, 0, 0),
-				Font = Enum.Font.GothamBold,
-				Name = "Title"
-			}),
-			SetProps(MakeElement("Label", NotificationConfig.Content, 14), {
-				Size = UDim2.new(1, 0, 0, 0),
-				Position = UDim2.new(0, 0, 0, 25),
-				Font = Enum.Font.GothamSemibold,
-				Name = "Content",
-				AutomaticSize = Enum.AutomaticSize.Y,
-				TextColor3 = Color3.fromRGB(200, 200, 200),
-				TextWrapped = true
-			})
-		})
-
-		TweenService:Create(NotificationFrame, TweenInfo.new(0.5, Enum.EasingStyle.Quint), {Position = UDim2.new(0, 0, 0, 0)}):Play()
-
-		wait(NotificationConfig.Time - 0.88)
-		TweenService:Create(NotificationFrame.Icon, TweenInfo.new(0.4, Enum.EasingStyle.Quint), {ImageTransparency = 1}):Play()
-		TweenService:Create(NotificationFrame, TweenInfo.new(0.8, Enum.EasingStyle.Quint), {BackgroundTransparency = 0.6}):Play()
-		wait(0.3)
-		TweenService:Create(NotificationFrame.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {Transparency = 0.9}):Play()
-		TweenService:Create(NotificationFrame.Title, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {TextTransparency = 0.4}):Play()
-		TweenService:Create(NotificationFrame.Content, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {TextTransparency = 0.5}):Play()
-		wait(0.05)
-
-		NotificationFrame:TweenPosition(UDim2.new(1, 20, 0, 0),'In','Quint',0.8,true)
-		wait(1.35)
-		NotificationFrame:Destroy()
-	end)
-end    
-
 local buttonText = Instance.new("TextLabel")
 buttonText.Name = "ButtonText"
 buttonText.Font = Enum.Font.GothamBold
@@ -1760,12 +1777,8 @@ end)
 
 return tabtable
 end
-	
-Libbrary:MakeNotification({
-		Name = "UI Library Upgrade",
-		Content = "New UI Library Available at sirius.menu/discord and sirius.menu/rayfield",
-		Time = 5
-	})
+
+NotificationManager:CreateNotification("ArticCT: Get updates in our server!", 5, library.theme.Topbar, "rbxassetid://4384403532")
 
 return window
 end
