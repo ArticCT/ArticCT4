@@ -7,7 +7,7 @@ local LocalPlayer = game:GetService("Players").LocalPlayer
 local Mouse = LocalPlayer:GetMouse()
 local HttpService = game:GetService("HttpService")
 
-local OrionLib = {
+local ArcLib = {
 	Elements = {},
 	ThemeObjects = {},
 	Connections = {},
@@ -35,7 +35,7 @@ local Success, Response = pcall(function()
 end)
 
 if not Success then
-	warn"\nOrionLib- Failed to load Icons. Error code: " .. Response .. "\n")
+	warn("\nArc Arc - Failed to load Feather Icons. Error code: " .. Response .. "\n")
 end	
 
 local function GetIcon(IconName)
@@ -46,53 +46,53 @@ local function GetIcon(IconName)
 	end
 end   
 
-local OrionLib = Instance.new("ScreenGui")
-OrionLib.Name = "OrionLib"
+local Arc = Instance.new("ScreenGui")
+Arc.Name = "Arc"
 if syn then
-	syn.protect_gui(OrionLib)
-	OrionLib.Parent = game.CoreGui
+	syn.protect_gui(Arc)
+	Arc.Parent = game.CoreGui
 else
-	OrionLib.Parent = gethui() or game.CoreGui
+	Arc.Parent = gethui() or game.CoreGui
 end
 
 if gethui then
 	for _, Interface in ipairs(gethui():GetChildren()) do
-		if Interface.Name == OrionLib.Name and Interface ~= OrionLib then
+		if Interface.Name == Arc.Name and Interface ~= Arc then
 			Interface:Destroy()
 		end
 	end
 else
 	for _, Interface in ipairs(game.CoreGui:GetChildren()) do
-		if Interface.Name == OrionLib.Name and Interface ~= OrionLib then
+		if Interface.Name == Arc.Name and Interface ~= Arc then
 			Interface:Destroy()
 		end
 	end
 end
 
-function OrionLibLib:IsRunning()
+function ArcLib:IsRunning()
 	if gethui then
-		return OrionLib.Parent == gethui()
+		return Arc.Parent == gethui()
 	else
-		return OrionLib.Parent == game:GetService("CoreGui")
+		return Arc.Parent == game:GetService("CoreGui")
 	end
 
 end
 
 local function AddConnection(Signal, Function)
-	if (not OrionLibLib:IsRunning()) then
+	if (not ArcLib:IsRunning()) then
 		return
 	end
 	local SignalConnect = Signal:Connect(Function)
-	table.insert(OrionLibLib.Connections, SignalConnect)
+	table.insert(ArcLib.Connections, SignalConnect)
 	return SignalConnect
 end
 
 task.spawn(function()
-	while (OrionLibLib:IsRunning()) do
+	while (ArcLib:IsRunning()) do
 		wait()
 	end
 
-	for _, Connection in next, OrionLibLib.Connections do
+	for _, Connection in next, ArcLib.Connections do
 		Connection:Disconnect()
 	end
 end)
@@ -139,13 +139,13 @@ local function Create(Name, Properties, Children)
 end
 
 local function CreateElement(ElementName, ElementFunction)
-	OrionLibLib.Elements[ElementName] = function(...)
+	ArcLib.Elements[ElementName] = function(...)
 		return ElementFunction(...)
 	end
 end
 
 local function MakeElement(ElementName, ...)
-	local NewElement = OrionLibLib.Elements[ElementName](...)
+	local NewElement = ArcLib.Elements[ElementName](...)
 	return NewElement
 end
 
@@ -188,18 +188,18 @@ local function ReturnProperty(Object)
 end
 
 local function AddThemeObject(Object, Type)
-	if not OrionLibLib.ThemeObjects[Type] then
-		OrionLibLib.ThemeObjects[Type] = {}
+	if not ArcLib.ThemeObjects[Type] then
+		ArcLib.ThemeObjects[Type] = {}
 	end    
-	table.insert(OrionLibLib.ThemeObjects[Type], Object)
-	Object[ReturnProperty(Object)] = OrionLibLib.Themes[OrionLibLib.SelectedTheme][Type]
+	table.insert(ArcLib.ThemeObjects[Type], Object)
+	Object[ReturnProperty(Object)] = ArcLib.Themes[ArcLib.SelectedTheme][Type]
 	return Object
 end    
 
 local function SetTheme()
-	for Name, Type in pairs(OrionLibLib.ThemeObjects) do
+	for Name, Type in pairs(ArcLib.ThemeObjects) do
 		for _, Object in pairs(Type) do
-			Object[ReturnProperty(Object)] = OrionLibLib.Themes[OrionLibLib.SelectedTheme][Name]
+			Object[ReturnProperty(Object)] = ArcLib.Themes[ArcLib.SelectedTheme][Name]
 		end    
 	end    
 end
@@ -215,23 +215,23 @@ end
 local function LoadCfg(Config)
 	local Data = HttpService:JSONDecode(Config)
 	table.foreach(Data, function(a,b)
-		if OrionLibLib.Flags[a] then
+		if ArcLib.Flags[a] then
 			spawn(function() 
-				if OrionLibLib.Flags[a].Type == "Colorpicker" then
-					OrionLibLib.Flags[a]:Set(UnpackColor(b))
+				if ArcLib.Flags[a].Type == "Colorpicker" then
+					ArcLib.Flags[a]:Set(UnpackColor(b))
 				else
-					OrionLibLib.Flags[a]:Set(b)
+					ArcLib.Flags[a]:Set(b)
 				end    
 			end)
 		else
-			warn("OrionLib OrionLib Config Loader - Could not find ", a ,b)
+			warn("Arc Arc Config Loader - Could not find ", a ,b)
 		end
 	end)
 end
 
 local function SaveCfg(Name)
 	local Data = {}
-	for i,v in pairs(OrionLibLib.Flags) do
+	for i,v in pairs(ArcLib.Flags) do
 		if v.Save then
 			if v.Type == "Colorpicker" then
 				Data[i] = PackColor(v.Value)
@@ -240,7 +240,7 @@ local function SaveCfg(Name)
 			end
 		end	
 	end
-	writefile(OrionLibLib.Folder .. "/" .. Name .. ".txt", tostring(HttpService:JSONEncode(Data)))
+	writefile(ArcLib.Folder .. "/" .. Name .. ".txt", tostring(HttpService:JSONEncode(Data)))
 end
 
 local WhitelistedMouse = {Enum.UserInputType.MouseButton1, Enum.UserInputType.MouseButton2,Enum.UserInputType.MouseButton3}
@@ -256,7 +256,7 @@ end
 
 CreateElement("Corner", function(Scale, Offset)
 	local Corner = Create("UICorner", {
-		CornerRadius = UDim.new(Scale or 0, Offset or 3)
+		CornerRadius = UDim.new(Scale or 0, Offset or 10)
 	})
 	return Corner
 end)
@@ -384,10 +384,10 @@ local NotificationHolder = SetProps(SetChildren(MakeElement("TFrame"), {
 	Position = UDim2.new(1, -25, 1, -25),
 	Size = UDim2.new(0, 300, 1, -25),
 	AnchorPoint = Vector2.new(1, 1),
-	Parent = OrionLib
+	Parent = Arc
 })
 
-function OrionLibLib:MakeNotification(NotificationConfig)
+function ArcLib:MakeNotification(NotificationConfig)
 	spawn(function()
 		NotificationConfig.Name = NotificationConfig.Name or "Notification"
 		NotificationConfig.Content = NotificationConfig.Content or "Test"
@@ -448,12 +448,12 @@ function OrionLibLib:MakeNotification(NotificationConfig)
 	end)
 end    
 
-function OrionLibLib:Init()
-	if OrionLibLib.SaveCfg then	
+function ArcLib:Init()
+	if ArcLib.SaveCfg then	
 		pcall(function()
-			if isfile(OrionLibLib.Folder .. "/" .. game.GameId .. ".txt") then
-				LoadCfg(readfile(OrionLibLib.Folder .. "/" .. game.GameId .. ".txt"))
-				OrionLibLib:MakeNotification({
+			if isfile(ArcLib.Folder .. "/" .. game.GameId .. ".txt") then
+				LoadCfg(readfile(ArcLib.Folder .. "/" .. game.GameId .. ".txt"))
+				ArcLib:MakeNotification({
 					Name = "Configuration",
 					Content = "Auto-loaded configuration for the game " .. game.GameId .. ".",
 					Time = 5
@@ -463,27 +463,27 @@ function OrionLibLib:Init()
 	end	
 end	
 
-function OrionLibLib:MakeWindow(WindowConfig)
+function ArcLib:MakeWindow(WindowConfig)
 	local FirstTab = true
 	local Minimized = false
 	local Loaded = false
 	local UIHidden = false
 
 	WindowConfig = WindowConfig or {}
-	WindowConfig.Name = WindowConfig.Name or "OrionLib"
+	WindowConfig.Name = WindowConfig.Name or "Arc Arc"
 	WindowConfig.ConfigFolder = WindowConfig.ConfigFolder or WindowConfig.Name
 	WindowConfig.SaveConfig = WindowConfig.SaveConfig or false
 	WindowConfig.HidePremium = WindowConfig.HidePremium or false
 	if WindowConfig.IntroEnabled == nil then
 		WindowConfig.IntroEnabled = true
 	end
-	WindowConfig.IntroText = WindowConfig.IntroText or "Welcome to Artic"
+	WindowConfig.IntroText = WindowConfig.IntroText or "Arc Arc"
 	WindowConfig.CloseCallback = WindowConfig.CloseCallback or function() end
 	WindowConfig.ShowIcon = WindowConfig.ShowIcon or false
-	WindowConfig.Icon = WindowConfig.Icon or "rbxassetid://4384403532"
-	WindowConfig.IntroIcon = WindowConfig.IntroIcon or "rbxassetid://4384403532"
-	OrionLibLib.Folder = WindowConfig.ConfigFolder
-	OrionLibLib.SaveCfg = WindowConfig.SaveConfig
+	WindowConfig.Icon = WindowConfig.Icon or "rbxassetid://8834748103"
+	WindowConfig.IntroIcon = WindowConfig.IntroIcon or "rbxassetid://8834748103"
+	ArcLib.Folder = WindowConfig.ConfigFolder
+	ArcLib.SaveCfg = WindowConfig.SaveConfig
 
 	if WindowConfig.SaveConfig then
 		if not isfolder(WindowConfig.ConfigFolder) then
@@ -556,8 +556,11 @@ function OrionLibLib:MakeWindow(WindowConfig)
 				AnchorPoint = Vector2.new(0, 0.5),
 				Size = UDim2.new(0, 32, 0, 32),
 				Position = UDim2.new(0, 10, 0.5, 0)
-			}),
-    hemeObject(SetProps(MakeElement("Image", "rbxassetid://4031889928"), {
+			}), {
+				SetProps(MakeElement("Image", "https://www.roblox.com/headshot-thumbnail/image?userId=".. LocalPlayer.UserId .."&width=420&height=420&format=png"), {
+					Size = UDim2.new(1, 0, 1, 0)
+				}),
+				AddThemeObject(SetProps(MakeElement("Image", "rbxassetid://4031889928"), {
 					Size = UDim2.new(1, 0, 1, 0),
 				}), "Second"),
 				MakeElement("Corner", 1)
@@ -597,7 +600,7 @@ function OrionLibLib:MakeWindow(WindowConfig)
 	}), "Stroke")
 
 	local MainWindow = AddThemeObject(SetChildren(SetProps(MakeElement("RoundFrame", Color3.fromRGB(255, 255, 255), 0, 10), {
-		Parent = OrionLib,
+		Parent = Arc,
 		Position = UDim2.new(0.5, -307, 0.5, -172),
 		Size = UDim2.new(0, 615, 0, 344),
 		ClipsDescendants = true
@@ -646,7 +649,7 @@ function OrionLibLib:MakeWindow(WindowConfig)
 	AddConnection(CloseBtn.MouseButton1Up, function()
 		MainWindow.Visible = false
 		UIHidden = true
-		OrionLibLib:MakeNotification({
+		ArcLib:MakeNotification({
 			Name = "Interface Hidden",
 			Content = "Tap RightShift to reopen the interface",
 			Time = 5
@@ -683,7 +686,7 @@ function OrionLibLib:MakeWindow(WindowConfig)
 	local function LoadSequence()
 		MainWindow.Visible = false
 		local LoadSequenceLogo = SetProps(MakeElement("Image", WindowConfig.IntroIcon), {
-			Parent = OrionLib,
+			Parent = Arc,
 			AnchorPoint = Vector2.new(0.5, 0.5),
 			Position = UDim2.new(0.5, 0, 0.4, 0),
 			Size = UDim2.new(0, 28, 0, 28),
@@ -692,7 +695,7 @@ function OrionLibLib:MakeWindow(WindowConfig)
 		})
 
 		local LoadSequenceText = SetProps(MakeElement("Label", WindowConfig.IntroText, 14), {
-			Parent = OrionLib,
+			Parent = Arc,
 			Size = UDim2.new(1, 0, 1, 0),
 			AnchorPoint = Vector2.new(0.5, 0.5),
 			Position = UDim2.new(0.5, 19, 0.5, 0),
@@ -882,22 +885,22 @@ function OrionLibLib:MakeWindow(WindowConfig)
 				}), "Second")
 
 				AddConnection(Click.MouseEnter, function()
-					TweenService:Create(ButtonFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(OrionLibLib.Themes[OrionLibLib.SelectedTheme].Second.R * 255 + 3, OrionLibLib.Themes[OrionLibLib.SelectedTheme].Second.G * 255 + 3, OrionLibLib.Themes[OrionLibLib.SelectedTheme].Second.B * 255 + 3)}):Play()
+					TweenService:Create(ButtonFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(ArcLib.Themes[ArcLib.SelectedTheme].Second.R * 255 + 3, ArcLib.Themes[ArcLib.SelectedTheme].Second.G * 255 + 3, ArcLib.Themes[ArcLib.SelectedTheme].Second.B * 255 + 3)}):Play()
 				end)
 
 				AddConnection(Click.MouseLeave, function()
-					TweenService:Create(ButtonFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = OrionLibLib.Themes[OrionLibLib.SelectedTheme].Second}):Play()
+					TweenService:Create(ButtonFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = ArcLib.Themes[ArcLib.SelectedTheme].Second}):Play()
 				end)
 
 				AddConnection(Click.MouseButton1Up, function()
-					TweenService:Create(ButtonFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(OrionLibLib.Themes[OrionLibLib.SelectedTheme].Second.R * 255 + 3, OrionLibLib.Themes[OrionLibLib.SelectedTheme].Second.G * 255 + 3, OrionLibLib.Themes[OrionLibLib.SelectedTheme].Second.B * 255 + 3)}):Play()
+					TweenService:Create(ButtonFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(ArcLib.Themes[ArcLib.SelectedTheme].Second.R * 255 + 3, ArcLib.Themes[ArcLib.SelectedTheme].Second.G * 255 + 3, ArcLib.Themes[ArcLib.SelectedTheme].Second.B * 255 + 3)}):Play()
 					spawn(function()
 						ButtonConfig.Callback()
 					end)
 				end)
 
 				AddConnection(Click.MouseButton1Down, function()
-					TweenService:Create(ButtonFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(OrionLibLib.Themes[OrionLibLib.SelectedTheme].Second.R * 255 + 6, OrionLibLib.Themes[OrionLibLib.SelectedTheme].Second.G * 255 + 6, OrionLibLib.Themes[OrionLibLib.SelectedTheme].Second.B * 255 + 6)}):Play()
+					TweenService:Create(ButtonFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(ArcLib.Themes[ArcLib.SelectedTheme].Second.R * 255 + 6, ArcLib.Themes[ArcLib.SelectedTheme].Second.G * 255 + 6, ArcLib.Themes[ArcLib.SelectedTheme].Second.B * 255 + 6)}):Play()
 				end)
 
 				function Button:Set(ButtonText)
@@ -957,8 +960,8 @@ function OrionLibLib:MakeWindow(WindowConfig)
 
 				function Toggle:Set(Value)
 					Toggle.Value = Value
-					TweenService:Create(ToggleBox, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Toggle.Value and ToggleConfig.Color or OrionLibLib.Themes.Default.Divider}):Play()
-					TweenService:Create(ToggleBox.Stroke, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {Color = Toggle.Value and ToggleConfig.Color or OrionLibLib.Themes.Default.Stroke}):Play()
+					TweenService:Create(ToggleBox, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Toggle.Value and ToggleConfig.Color or ArcLib.Themes.Default.Divider}):Play()
+					TweenService:Create(ToggleBox.Stroke, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {Color = Toggle.Value and ToggleConfig.Color or ArcLib.Themes.Default.Stroke}):Play()
 					TweenService:Create(ToggleBox.Ico, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {ImageTransparency = Toggle.Value and 0 or 1, Size = Toggle.Value and UDim2.new(0, 20, 0, 20) or UDim2.new(0, 8, 0, 8)}):Play()
 					ToggleConfig.Callback(Toggle.Value)
 				end    
@@ -966,25 +969,25 @@ function OrionLibLib:MakeWindow(WindowConfig)
 				Toggle:Set(Toggle.Value)
 
 				AddConnection(Click.MouseEnter, function()
-					TweenService:Create(ToggleFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(OrionLibLib.Themes[OrionLibLib.SelectedTheme].Second.R * 255 + 3, OrionLibLib.Themes[OrionLibLib.SelectedTheme].Second.G * 255 + 3, OrionLibLib.Themes[OrionLibLib.SelectedTheme].Second.B * 255 + 3)}):Play()
+					TweenService:Create(ToggleFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(ArcLib.Themes[ArcLib.SelectedTheme].Second.R * 255 + 3, ArcLib.Themes[ArcLib.SelectedTheme].Second.G * 255 + 3, ArcLib.Themes[ArcLib.SelectedTheme].Second.B * 255 + 3)}):Play()
 				end)
 
 				AddConnection(Click.MouseLeave, function()
-					TweenService:Create(ToggleFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = OrionLibLib.Themes[OrionLibLib.SelectedTheme].Second}):Play()
+					TweenService:Create(ToggleFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = ArcLib.Themes[ArcLib.SelectedTheme].Second}):Play()
 				end)
 
 				AddConnection(Click.MouseButton1Up, function()
-					TweenService:Create(ToggleFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(OrionLibLib.Themes[OrionLibLib.SelectedTheme].Second.R * 255 + 3, OrionLibLib.Themes[OrionLibLib.SelectedTheme].Second.G * 255 + 3, OrionLibLib.Themes[OrionLibLib.SelectedTheme].Second.B * 255 + 3)}):Play()
+					TweenService:Create(ToggleFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(ArcLib.Themes[ArcLib.SelectedTheme].Second.R * 255 + 3, ArcLib.Themes[ArcLib.SelectedTheme].Second.G * 255 + 3, ArcLib.Themes[ArcLib.SelectedTheme].Second.B * 255 + 3)}):Play()
 					SaveCfg(game.GameId)
 					Toggle:Set(not Toggle.Value)
 				end)
 
 				AddConnection(Click.MouseButton1Down, function()
-					TweenService:Create(ToggleFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(OrionLibLib.Themes[OrionLibLib.SelectedTheme].Second.R * 255 + 6, OrionLibLib.Themes[OrionLibLib.SelectedTheme].Second.G * 255 + 6, OrionLibLib.Themes[OrionLibLib.SelectedTheme].Second.B * 255 + 6)}):Play()
+					TweenService:Create(ToggleFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(ArcLib.Themes[ArcLib.SelectedTheme].Second.R * 255 + 6, ArcLib.Themes[ArcLib.SelectedTheme].Second.G * 255 + 6, ArcLib.Themes[ArcLib.SelectedTheme].Second.B * 255 + 6)}):Play()
 				end)
 
 				if ToggleConfig.Flag then
-					OrionLibLib.Flags[ToggleConfig.Flag] = Toggle
+					ArcLib.Flags[ToggleConfig.Flag] = Toggle
 				end	
 				return Toggle
 			end  
@@ -1079,7 +1082,7 @@ function OrionLibLib:MakeWindow(WindowConfig)
 
 				Slider:Set(Slider.Value)
 				if SliderConfig.Flag then				
-					OrionLibLib.Flags[SliderConfig.Flag] = Slider
+					ArcLib.Flags[SliderConfig.Flag] = Slider
 				end
 				return Slider
 			end  
@@ -1234,7 +1237,7 @@ function OrionLibLib:MakeWindow(WindowConfig)
 				Dropdown:Refresh(Dropdown.Options, false)
 				Dropdown:Set(Dropdown.Value)
 				if DropdownConfig.Flag then				
-					OrionLibLib.Flags[DropdownConfig.Flag] = Dropdown
+					ArcLib.Flags[DropdownConfig.Flag] = Dropdown
 				end
 				return Dropdown
 			end
@@ -1332,19 +1335,19 @@ function OrionLibLib:MakeWindow(WindowConfig)
 				end)
 
 				AddConnection(Click.MouseEnter, function()
-					TweenService:Create(BindFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(OrionLibLib.Themes[OrionLibLib.SelectedTheme].Second.R * 255 + 3, OrionLibLib.Themes[OrionLibLib.SelectedTheme].Second.G * 255 + 3, OrionLibLib.Themes[OrionLibLib.SelectedTheme].Second.B * 255 + 3)}):Play()
+					TweenService:Create(BindFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(ArcLib.Themes[ArcLib.SelectedTheme].Second.R * 255 + 3, ArcLib.Themes[ArcLib.SelectedTheme].Second.G * 255 + 3, ArcLib.Themes[ArcLib.SelectedTheme].Second.B * 255 + 3)}):Play()
 				end)
 
 				AddConnection(Click.MouseLeave, function()
-					TweenService:Create(BindFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = OrionLibLib.Themes[OrionLibLib.SelectedTheme].Second}):Play()
+					TweenService:Create(BindFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = ArcLib.Themes[ArcLib.SelectedTheme].Second}):Play()
 				end)
 
 				AddConnection(Click.MouseButton1Up, function()
-					TweenService:Create(BindFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(OrionLibLib.Themes[OrionLibLib.SelectedTheme].Second.R * 255 + 3, OrionLibLib.Themes[OrionLibLib.SelectedTheme].Second.G * 255 + 3, OrionLibLib.Themes[OrionLibLib.SelectedTheme].Second.B * 255 + 3)}):Play()
+					TweenService:Create(BindFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(ArcLib.Themes[ArcLib.SelectedTheme].Second.R * 255 + 3, ArcLib.Themes[ArcLib.SelectedTheme].Second.G * 255 + 3, ArcLib.Themes[ArcLib.SelectedTheme].Second.B * 255 + 3)}):Play()
 				end)
 
 				AddConnection(Click.MouseButton1Down, function()
-					TweenService:Create(BindFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(OrionLibLib.Themes[OrionLibLib.SelectedTheme].Second.R * 255 + 6, OrionLibLib.Themes[OrionLibLib.SelectedTheme].Second.G * 255 + 6, OrionLibLib.Themes[OrionLibLib.SelectedTheme].Second.B * 255 + 6)}):Play()
+					TweenService:Create(BindFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(ArcLib.Themes[ArcLib.SelectedTheme].Second.R * 255 + 6, ArcLib.Themes[ArcLib.SelectedTheme].Second.G * 255 + 6, ArcLib.Themes[ArcLib.SelectedTheme].Second.B * 255 + 6)}):Play()
 				end)
 
 				function Bind:Set(Key)
@@ -1356,7 +1359,7 @@ function OrionLibLib:MakeWindow(WindowConfig)
 
 				Bind:Set(BindConfig.Default)
 				if BindConfig.Flag then				
-					OrionLibLib.Flags[BindConfig.Flag] = Bind
+					ArcLib.Flags[BindConfig.Flag] = Bind
 				end
 				return Bind
 			end  
@@ -1423,20 +1426,20 @@ function OrionLibLib:MakeWindow(WindowConfig)
 				TextboxActual.Text = TextboxConfig.Default
 
 				AddConnection(Click.MouseEnter, function()
-					TweenService:Create(TextboxFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(OrionLibLib.Themes[OrionLibLib.SelectedTheme].Second.R * 255 + 3, OrionLibLib.Themes[OrionLibLib.SelectedTheme].Second.G * 255 + 3, OrionLibLib.Themes[OrionLibLib.SelectedTheme].Second.B * 255 + 3)}):Play()
+					TweenService:Create(TextboxFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(ArcLib.Themes[ArcLib.SelectedTheme].Second.R * 255 + 3, ArcLib.Themes[ArcLib.SelectedTheme].Second.G * 255 + 3, ArcLib.Themes[ArcLib.SelectedTheme].Second.B * 255 + 3)}):Play()
 				end)
 
 				AddConnection(Click.MouseLeave, function()
-					TweenService:Create(TextboxFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = OrionLibLib.Themes[OrionLibLib.SelectedTheme].Second}):Play()
+					TweenService:Create(TextboxFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = ArcLib.Themes[ArcLib.SelectedTheme].Second}):Play()
 				end)
 
 				AddConnection(Click.MouseButton1Up, function()
-					TweenService:Create(TextboxFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(OrionLibLib.Themes[OrionLibLib.SelectedTheme].Second.R * 255 + 3, OrionLibLib.Themes[OrionLibLib.SelectedTheme].Second.G * 255 + 3, OrionLibLib.Themes[OrionLibLib.SelectedTheme].Second.B * 255 + 3)}):Play()
+					TweenService:Create(TextboxFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(ArcLib.Themes[ArcLib.SelectedTheme].Second.R * 255 + 3, ArcLib.Themes[ArcLib.SelectedTheme].Second.G * 255 + 3, ArcLib.Themes[ArcLib.SelectedTheme].Second.B * 255 + 3)}):Play()
 					TextboxActual:CaptureFocus()
 				end)
 
 				AddConnection(Click.MouseButton1Down, function()
-					TweenService:Create(TextboxFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(OrionLibLib.Themes[OrionLibLib.SelectedTheme].Second.R * 255 + 6, OrionLibLib.Themes[OrionLibLib.SelectedTheme].Second.G * 255 + 6, OrionLibLib.Themes[OrionLibLib.SelectedTheme].Second.B * 255 + 6)}):Play()
+					TweenService:Create(TextboxFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(ArcLib.Themes[ArcLib.SelectedTheme].Second.R * 255 + 6, ArcLib.Themes[ArcLib.SelectedTheme].Second.G * 255 + 6, ArcLib.Themes[ArcLib.SelectedTheme].Second.B * 255 + 6)}):Play()
 				end)
 			end 
 			function ElementFunction:AddColorpicker(ColorpickerConfig)
@@ -1620,7 +1623,7 @@ function OrionLibLib:MakeWindow(WindowConfig)
 
 				Colorpicker:Set(Colorpicker.Value)
 				if ColorpickerConfig.Flag then				
-					OrionLibLib.Flags[ColorpickerConfig.Flag] = Colorpicker
+					ArcLib.Flags[ColorpickerConfig.Flag] = Colorpicker
 				end
 				return Colorpicker
 			end  
@@ -1707,9 +1710,9 @@ function OrionLibLib:MakeWindow(WindowConfig)
 		return ElementFunction   
 	end  
 	
-	OrionLib:MakeNotification({
-		Name = "Artic",
-		Content = "Join our discord for more updates:https://discord.gg/wTRXCSSsnr",
+	ArcLib:MakeNotification({
+		Name = "UI Arc Upgrade",
+		Content = "New UI Arc Available at sirius.menu/discord and sirius.menu/rayfield",
 		Time = 5
 	})
 	
@@ -1718,8 +1721,8 @@ function OrionLibLib:MakeWindow(WindowConfig)
 	return TabFunction
 end   
 
-function OrionLib:Destroy()
-	OrionLib:Destroy()
+function ArcLib:Destroy()
+	Arc:Destroy()
 end
 
-return OrionLib
+return ArcLib
