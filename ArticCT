@@ -1,6 +1,6 @@
 local MyUILibrary = {}
 
--- Theme for the UI
+-- Default theme
 MyUILibrary.Theme = {
     PrimaryColor = Color3.fromRGB(0, 122, 255),
     SecondaryColor = Color3.fromRGB(255, 255, 255),
@@ -8,9 +8,10 @@ MyUILibrary.Theme = {
     AccentColor = Color3.fromRGB(60, 60, 60),
 }
 
--- Function to create a draggable window
+-- Create draggable window
 function MyUILibrary.CreateWindow(title, size)
     local screenGui = Instance.new("ScreenGui")
+    screenGui.Name = "MyUI"
     screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
     local window = Instance.new("Frame")
@@ -29,21 +30,13 @@ function MyUILibrary.CreateWindow(title, size)
     titleBar.TextSize = 20
     titleBar.Parent = window
 
-    -- Draggable functionality
-    local dragging, dragInput, dragStart, startPos
-    local UserInputService = game:GetService("UserInputService")
-
+    -- Dragging functionality
+    local dragging, dragStart, startPos
     titleBar.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
             dragging = true
             dragStart = input.Position
             startPos = window.Position
-        end
-    end)
-
-    titleBar.InputChanged:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseMovement then
-            dragInput = input
         end
     end)
 
@@ -53,8 +46,8 @@ function MyUILibrary.CreateWindow(title, size)
         end
     end)
 
-    UserInputService.InputChanged:Connect(function(input)
-        if input == dragInput and dragging then
+    game:GetService("UserInputService").InputChanged:Connect(function(input)
+        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
             local delta = input.Position - dragStart
             window.Position = UDim2.new(
                 startPos.X.Scale,
@@ -68,26 +61,18 @@ function MyUILibrary.CreateWindow(title, size)
     return window
 end
 
--- Function to create a button
+-- Create button
 function MyUILibrary.CreateButton(parent, text, callback)
     local button = Instance.new("TextButton")
     button.Size = UDim2.new(0, 150, 0, 50)
+    button.Position = UDim2.new(0, 10, 0, 10)
     button.BackgroundColor3 = MyUILibrary.Theme.PrimaryColor
     button.TextColor3 = MyUILibrary.Theme.SecondaryColor
+    button.Text = text or "Button"
     button.Font = Enum.Font.SourceSansBold
     button.TextSize = 18
-    button.Text = text or "Button"
     button.Parent = parent
 
-    -- Hover effect
-    button.MouseEnter:Connect(function()
-        button.BackgroundColor3 = MyUILibrary.Theme.AccentColor
-    end)
-    button.MouseLeave:Connect(function()
-        button.BackgroundColor3 = MyUILibrary.Theme.PrimaryColor
-    end)
-
-    -- Button click
     button.MouseButton1Click:Connect(function()
         if callback then
             callback()
@@ -95,65 +80,6 @@ function MyUILibrary.CreateButton(parent, text, callback)
     end)
 
     return button
-end
-
--- Function to create a slider
-function MyUILibrary.CreateSlider(parent, text, minValue, maxValue, callback)
-    local sliderFrame = Instance.new("Frame")
-    sliderFrame.Size = UDim2.new(0, 300, 0, 50)
-    sliderFrame.BackgroundTransparency = 1
-    sliderFrame.Parent = parent
-
-    local label = Instance.new("TextLabel")
-    label.Size = UDim2.new(0, 100, 0, 50)
-    label.BackgroundTransparency = 1
-    label.Text = text or "Slider"
-    label.TextColor3 = MyUILibrary.Theme.SecondaryColor
-    label.Font = Enum.Font.SourceSansBold
-    label.TextSize = 18
-    label.Parent = sliderFrame
-
-    local sliderBar = Instance.new("Frame")
-    sliderBar.Size = UDim2.new(0, 180, 0, 10)
-    sliderBar.Position = UDim2.new(0, 120, 0.5, -5)
-    sliderBar.BackgroundColor3 = MyUILibrary.Theme.AccentColor
-    sliderBar.BorderSizePixel = 0
-    sliderBar.Parent = sliderFrame
-
-    local sliderHandle = Instance.new("Frame")
-    sliderHandle.Size = UDim2.new(0, 20, 0, 20)
-    sliderHandle.Position = UDim2.new(0, 0, 0.5, -10)
-    sliderHandle.BackgroundColor3 = MyUILibrary.Theme.PrimaryColor
-    sliderHandle.BorderSizePixel = 0
-    sliderHandle.Parent = sliderBar
-
-    local UserInputService = game:GetService("UserInputService")
-    local dragging = false
-
-    sliderHandle.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = true
-        end
-    end)
-
-    sliderHandle.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = false
-        end
-    end)
-
-    UserInputService.InputChanged:Connect(function(input)
-        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-            local sliderPosition = math.clamp(input.Position.X - sliderBar.AbsolutePosition.X, 0, sliderBar.AbsoluteSize.X)
-            sliderHandle.Position = UDim2.new(0, sliderPosition, 0.5, -10)
-            local value = math.floor((sliderPosition / sliderBar.AbsoluteSize.X) * (maxValue - minValue) + minValue)
-            if callback then
-                callback(value)
-            end
-        end
-    end)
-
-    return sliderFrame
 end
 
 return MyUILibrary
