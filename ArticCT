@@ -6,14 +6,13 @@ local library = {
 library.flags = library.Flags
 library.theme = library.Theme
 
-function library.NotificationManager:CreateNotification(Content, Duration, BackgroundColor, Icon)
-    local NotificationManager = {}
+local NotificationManager = {}
 
 function NotificationManager:CreateNotification(Content, Duration, BackgroundColor, Icon)
     -- Default values
     Content = Content or "Default Notification"
     Duration = Duration or 5
-    BackgroundColor = BackgroundColor or library.theme.Topbar
+    BackgroundColor = BackgroundColor or Color3.fromRGB(50, 50, 50)
     Icon = Icon or "rbxassetid://4384403532"
 
     -- Create notification parent frame
@@ -22,7 +21,7 @@ function NotificationManager:CreateNotification(Content, Duration, BackgroundCol
     NotificationHolder.Position = UDim2.new(1, -25, 1, -25)
     NotificationHolder.AnchorPoint = Vector2.new(1, 1)
     NotificationHolder.BackgroundTransparency = 1
-    NotificationHolder.Parent = script.Parent -- Adjust to your UI container
+    NotificationHolder.Parent = script.Parent -- Update this to your UI's parent container
 
     -- Notification container
     local NotificationFrame = Instance.new("Frame")
@@ -39,7 +38,7 @@ function NotificationManager:CreateNotification(Content, Duration, BackgroundCol
 
     -- Add stroke
     local UIStroke = Instance.new("UIStroke")
-    UIStroke.Color = library.theme.ItemUIStroke
+    UIStroke.Color = Color3.fromRGB(93, 93, 93) -- Adjust based on your theme
     UIStroke.Thickness = 1.2
     UIStroke.Parent = NotificationFrame
 
@@ -56,7 +55,7 @@ function NotificationManager:CreateNotification(Content, Duration, BackgroundCol
     IconImage.Image = Icon
     IconImage.Size = UDim2.new(0, 24, 0, 24)
     IconImage.BackgroundTransparency = 1
-    IconImage.ImageColor3 = library.theme.ItemText
+    IconImage.ImageColor3 = Color3.fromRGB(240, 240, 240) -- Adjust as needed
     IconImage.Parent = NotificationFrame
 
     -- Title
@@ -64,7 +63,7 @@ function NotificationManager:CreateNotification(Content, Duration, BackgroundCol
     TitleLabel.Text = "Notification"
     TitleLabel.Font = Enum.Font.GothamBold
     TitleLabel.TextSize = 16
-    TitleLabel.TextColor3 = library.theme.ItemText
+    TitleLabel.TextColor3 = Color3.fromRGB(237, 237, 237) -- Adjust as needed
     TitleLabel.BackgroundTransparency = 1
     TitleLabel.Position = UDim2.new(0, 30, 0, 0)
     TitleLabel.Size = UDim2.new(1, -30, 0, 20)
@@ -75,7 +74,7 @@ function NotificationManager:CreateNotification(Content, Duration, BackgroundCol
     ContentLabel.Text = Content
     ContentLabel.Font = Enum.Font.GothamSemibold
     ContentLabel.TextSize = 14
-    ContentLabel.TextColor3 = library.theme.SectionText
+    ContentLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
     ContentLabel.BackgroundTransparency = 1
     ContentLabel.AutomaticSize = Enum.AutomaticSize.Y
     ContentLabel.TextWrapped = true
@@ -100,6 +99,8 @@ function NotificationManager:CreateNotification(Content, Duration, BackgroundCol
         NotificationHolder:Destroy()
     end)
 end
+
+return NotificationManager
 
 local Themes = {
     ["CUI"] = {
